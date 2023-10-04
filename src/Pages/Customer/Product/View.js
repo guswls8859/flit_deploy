@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react"
-import { Badge, Box, Button, Flex, HStack, Stack, StackDivider, Tag, Text, VStack, Wrap, WrapItem, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure, Select, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, CloseButton, Center } from "@chakra-ui/react"
-import { useLocation } from "react-router-dom"
+import { Badge, Box, Button, Flex, HStack, Stack, StackDivider, Tag, Text, VStack, Wrap, WrapItem, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure, Select, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, CloseButton, Center, AspectRatio, Avatar } from "@chakra-ui/react"
+import { useLocation, useNavigate } from "react-router-dom"
 import ImageSlider from "../../../Components/ImageSlider";
 import MobileStatus from "../../../Components/MobileStatus";
-import { compareDate, formattedAmount, getDate, getDocument, getShopProductList, parseDate, updateData } from "../../../DB/function";
+import { compareDate, formattedAmount, getDate, getDocument, getOwner, getShop, getShopProductList, parseDate, updateData } from "../../../DB/function";
 import { serverTimestamp } from "firebase/firestore";
 import { Body_sm, Title_lg, Title_sm, fontColor } from "../../../Style/Typograhy";
 import ProductItem from "../../../Components/ProductItem";
@@ -15,6 +15,7 @@ const SplitLine = () => {
 }
 
 const ProductView = () => {
+    const navigate = useNavigate();
     const location = useLocation();
     const [shopProducts, setShopProducts] = useState([]);
     const [product, setProduct] = useState(location.state);
@@ -28,9 +29,55 @@ const ProductView = () => {
     const [totalCost, setTotalCost] = useState(product.discount.unit == "%" ? product.sales_price - product.sales_price * 0.01 * product.discount.value : product.sales_price - product.discount.value)
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [modalData, setModal] = useState("")
+    const [owner, setOwner] = useState({})
+    const [shopInfo, setShopInfo] = useState({
+        shopname: '',
+        nickname: '',
+        follower: [],
+        review: [],
+        category: [],
+        delivery: ['픽업', '배송'],
+        use_bundle_delivery: false,
+        bundle_delivery: 0,
+        operate_time: {
+            week_open: '09:00',
+            week_close: '18:00',
+            weekend_open: '09:00',
+            weekend_close: '18:00',
+        },
+        reserve_time: {
+            week_open: '09:00',
+            week_close: '18:00',
+            weekend_open: '09:00',
+            weekend_close: '18:00',
+        },
+        break_time: {
+            week_open: '09:00',
+            week_close: '18:00',
+            weekend_open: '09:00',
+            weekend_close: '18:00',
+        },
+        holiday: [],
+        sns: [],
+        email: '',
+        comment: ''
+    })
+
     useEffect(() => {
+        getShopInfo();
+        getOwnerInfo();
         getShopProduct();
     }, []);
+
+    const getOwnerInfo = async () => {
+        let owner_ = await getOwner(location.state.ownerId)
+        setOwner(owner_)
+    }
+
+    const getShopInfo = async () => {
+        let shop_ = await getShop(location.state.ownerId)
+        setShopInfo(shop_)
+    }
 
     const getShopProduct = async () => {
         let shopProducts = await getShopProductList(location.state.ownerId)
@@ -132,28 +179,38 @@ const ProductView = () => {
             <Flex w='100%' left={0} position="fixed" zIndex={999} borderBottom={'1px solid #d9d9d9'}>
                 <MobileStatus title={'상품상세'} isCart={true} />
             </Flex>
-            <Stack direction={'column'} w='100%' mt={'50px'}>
-                <ImageSlider images={[product.thumbnail_image, ...product.product_image]} />
+            <Stack direction={'column'} w='100%' mt={'50px'} mb={'80px'}>
+                <Stack>
+                    <HStack p={4} bgColor={'gray.50'} onClick={() => navigate('/customer/shopinfo', { state : {shopInfo :shopInfo, account : owner}})}>
+                        <Avatar mr={2} src={owner.profileImage}></Avatar>
+                        <Text>{shopInfo.shopname}</Text>
+                    </HStack>
+                </Stack>
+                <Center maxW={'container.sm'}>
+                    <ImageSlider images={[product.thumbnail_image, ...product.product_image]} />
+                </Center>
 
                 <HStack w='100%' justifyContent={'center'} mt={6} borderBottom={'1px solid #d9d9d9'}>
-                    <Button w='25%' onClick={() => setTab(0)} variant={'unstyled'} color={tab == 0 ? `${fontColor.primary}` : 'black'} borderRadius={0} borderBottom={tab == 0 ? `5px solid ${fontColor.primary}` : 'none'}>상품조회</Button>
-                    <Button w='25%' onClick={() => setTab(1)} variant={'unstyled'} color={tab == 1 ? `${fontColor.primary}` : 'black'} borderRadius={0} borderBottom={tab == 1 ? `5px solid ${fontColor.primary}` : 'none'}>리뷰 {product.review.length}</Button>
+                    <Button border={'none'} w='25%' onClick={() => setTab(0)} variant={'unstyled'} color={tab == 0 ? `${fontColor.primary}` : 'black'} borderRadius={0} borderBottom={tab == 0 ? `5px solid ${fontColor.primary}` : 'none'}>상품조회</Button>
+                    <Button border={'none'} w='25%' onClick={() => setTab(1)} variant={'unstyled'} color={tab == 1 ? `${fontColor.primary}` : 'black'} borderRadius={0} borderBottom={tab == 1 ? `5px solid ${fontColor.primary}` : 'none'}>리뷰 {product.review.length}</Button>
                 </HStack>
 
                 <Box m={4} display={tab == 0 ? 'block' : 'none'}>
-                    <Stack direction={'column'}>
-                        <HStack>
-                            <Text {...Title_lg} mb={0}>{product.product_name}</Text>
-                            {parseDate(getDate(serverTimestamp())).getDate() - parseDate(getDate(product.regist_date)).getDate() < 7 && <Badge colorScheme="yellow">new</Badge>}
-                            {product.sales_count > 0 && <Badge colorScheme="red">Hot</Badge>}
-                        </HStack>
-                        <HStack mb={-1}>
-                            <Text fontWeight={'900'} color='#da4359'>{product.discount.value}{product.discount.unit}</Text>
-                            <Text {...Title_lg} mb={0}>{product.discount.unit == "%" ? formattedAmount(product.sales_price - product.sales_price * 0.01 * product.discount.value) : formattedAmount(product.sales_price - product.discount.value)}원</Text>
-                        </HStack>
-                        <Text textDecoration={'line-through'} color='#8c8c8c' mb={-2}>{formattedAmount(product.sales_price)}원</Text>
+                    <Stack direction={'column'} divider={<StackDivider height={'1px'} bgColor={'gray.300'} />}>
+                        <Stack>
+                            <HStack>
+                                <Text mr={2} {...Title_lg} mb={0}>{product.product_name}</Text>
+                                {parseDate(getDate(serverTimestamp())).getDate() - parseDate(getDate(product.regist_date)).getDate() < 7 && <Badge colorScheme="yellow" mr={2}>new</Badge>}
+                                {product.sales_count > 0 && <Badge colorScheme="red">Hot</Badge>}
+                            </HStack>
+                            <HStack mb={-1}>
+                                <Text mr={2} fontWeight={'900'} color='#da4359'>{product.discount.value}{product.discount.unit}</Text>
+                                <Text {...Title_lg} mb={0}>{product.discount.unit == "%" ? formattedAmount(product.sales_price - product.sales_price * 0.01 * product.discount.value) : formattedAmount(product.sales_price - product.discount.value)}원</Text>
+                            </HStack>
+                            <Text textDecoration={'line-through'} color='#8c8c8c'>{formattedAmount(product.sales_price)}원</Text>
 
-                        <SplitLine />
+                        </Stack>
+                        {/* <SplitLine /> */}
 
                         <Box>
                             {product.point.set == "설정함" &&
@@ -161,75 +218,84 @@ const ProductView = () => {
                                     <Text {...Title_lg}>포인트 적립</Text>
                                     {product.point.buy.set &&
                                         <HStack>
-                                            <Text>상품구매시</Text>
-                                            <Badge colorScheme="yellow">P</Badge>
+                                            <Text mr={1}>상품구매시</Text>
+                                            <Badge mr={1} colorScheme="yellow">P</Badge>
                                             <Text>{product.point.buy.value}{product.point.buy.unit}</Text>
                                         </HStack>
                                     }
                                     {product.point.review.set &&
                                         <HStack>
-                                            <Text>리뷰작성시</Text>
-                                            <Badge colorScheme="yellow">P</Badge>
+                                            <Text mr={1}>리뷰작성시</Text>
+                                            <Badge mr={1} colorScheme="yellow">P</Badge>
                                             <Text>{product.point.review.value}{product.point.review.unit}</Text>
                                         </HStack>
                                     }
                                 </Stack>
                             }
                         </Box>
-                        <SplitLine />
-                        <Text {...Title_lg}>배송 형태</Text>
-                        <Wrap>
-                            {product.delivery.map((value, index) => (
-                                <WrapItem>
-                                    <Tag variant={'outline'} colorScheme={value == "배송" ? 'blue' : 'red'}>
-                                        {value}
-                                    </Tag>
-                                </WrapItem>
-                            ))
-
-                            }
-                        </Wrap>
-                        <SplitLine />
-                        <Text {...Title_lg}>상세 설명</Text>
-                        <Text whiteSpace={'pre-wrap'}>{product.comment}</Text>
-
-                        <SplitLine />
-                        <Text {...Title_lg}>태그</Text>
-                        <Wrap >
-                            {product.tag.map((value, index) => (
-                                <WrapItem>
-                                    <Tag>
-                                        #{value}
-                                    </Tag>
-                                </WrapItem>
-                            ))
-
-                            }
-                        </Wrap>
-
-                        <SplitLine />
-                        <Text {...Title_lg}>색상</Text>
-                        <HStack >
-                            {
-                                product.color.map((value) => (
-                                    <Box w={'20px'} h={'20px'} borderRadius={'md'} bgColor={value}></Box>
+                        {/* <SplitLine /> */}
+                        <Box>
+                            <Text {...Title_lg}>배송 형태</Text>
+                            <Wrap>
+                                {product.delivery.map((value, index) => (
+                                    <WrapItem>
+                                        <Tag mr={1} variant={'outline'} colorScheme={value == "배송" ? 'blue' : 'red'}>
+                                            {value}
+                                        </Tag>
+                                    </WrapItem>
                                 ))
-                            }
-                        </HStack>
 
-                        <SplitLine />
-                        <Text {...Title_lg}>Shop 상품 더보기</Text>
+                                }
+                            </Wrap>
+                        </Box>
+                        {/* <SplitLine /> */}
+                        <Box>
+                            <Text {...Title_lg}>상세 설명</Text>
+                            <Text whiteSpace={'pre-wrap'}>{product.comment}</Text>
+                        </Box>
+                        {/* <SplitLine /> */}
+                        <Box>
+                            <Text {...Title_lg}>태그</Text>
+                            <Wrap >
+                                {product.tag.map((value, index) => (
+                                    <WrapItem>
+                                        <Tag mr={1}>
+                                            #{value}
+                                        </Tag>
+                                    </WrapItem>
+                                ))
+
+                                }
+                            </Wrap>
+                        </Box>
+
+                        {/* <SplitLine /> */}
+                        <Box>
+                            <Text {...Title_lg}>색상</Text>
+                            <HStack >
+                                {
+                                    product.color.map((value) => (
+                                        <Box mr={1} w={'20px'} h={'20px'} borderRadius={'md'} bgColor={value}></Box>
+                                    ))
+                                }
+                            </HStack>
+                        </Box>
+
+                        {/* <SplitLine /> */}
+                        <Box>
+                            <Text {...Title_lg}>Shop 상품 더보기</Text>
 
 
-                        <Flex overflowX='auto' className="scroll">
-                            {shopProducts.map((value) => (
-                                <Box w='40vw' flexShrink="0">
-                                    <ProductItem data={value} state={'판매중'} />
-                                </Box>
-                            ))}
-                        </Flex>
+                            <Flex overflowX='auto' className="scroll" mx={-4} px={2} my={-2}>
+                                {shopProducts.map((value) => (
+                                    <Box w='40vw' flexShrink="0" mr={1}>
+                                        <ProductItem data={value} state={'판매중'} />
+                                    </Box>
+                                ))}
+                            </Flex>
+                        </Box>
 
-                        <SplitLine />
+                        {/* <SplitLine /> */}
                         <Text {...Title_lg}>연관상품</Text>
 
 
@@ -238,7 +304,7 @@ const ProductView = () => {
                 </Box>
                 <Center bgColor={'white'} w="100vw" position={'fixed'} bottom={0} alignSelf={'center'} p={"10px"}>
 
-                    <Button onClick={() => setOpen(true)} w="100%" variant={'outline'} colorScheme="red">구매하기</Button>
+                    <Button onClick={() => setOpen(true)} w="90%" variant={'outline'} colorScheme="red">구매하기</Button>
                 </Center>
             </Stack>
 

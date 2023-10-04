@@ -200,6 +200,18 @@ export const getShop = async (ownerId) => {
   return result;
 }
 
+export const getPlan = async(ownerId, date) => {
+  const q = query(collection(db, 'Plan'), where("ownerId", "==", ownerId));
+  const querySnapshot = await getDocs(q);
+  let result = []
+  querySnapshot.forEach((doc) => {
+    console.log(getStrDate(date), getDate(date), getDate(doc.data().month))
+    if(getStrDate(date) === getDate(doc.data().month))
+      result = [...result, { ...doc.data(), id: doc.id }]
+  })
+  
+  return result;
+}
 
 
 
@@ -262,6 +274,10 @@ export function getPath(str) {
 
 }
 
+export function getStrDate(date) {
+  return date.getFullYear() + "-" + ('0' + (date.getMonth() + 1)).slice(-2) + "-" + ('0' + date.getDate()).slice(-2)
+}
+
 export function getDate(timestamp) {
   var date = new Date(timestamp.seconds * 1000)
 
@@ -312,13 +328,13 @@ export function compareDate(date) {
   }
 }
 
-export const getOwnerName = async (ownerId) => {
+export const getOwner = async (ownerId) => {
   const docRef = doc(db, "Owner", ownerId);
   const _doc = await getDoc(docRef);
 
   //console.log("Data", id, _doc.data());
 
-  return _doc.data().name
+  return _doc.data()
 }
 
 export const isDuplication = async(collectionId, field, value) => {
