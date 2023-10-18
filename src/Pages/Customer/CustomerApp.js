@@ -10,6 +10,12 @@ import Login from "./Login";
 import Cart from "./Cart";
 import Purchase from "./Purchase";
 import ShopInfo from "./ShopInfo";
+import Notice from "./Notice/Notice";
+import Event from "./Notice/Event";
+import NoticeView from "./Notice/View";
+import Chat from "./Chat";
+import ReviewList from './Review/List'
+import ReviewWrite from "./Review/Write";
 
 const CustomerApp = () => {
     return (
@@ -25,6 +31,12 @@ const CustomerApp = () => {
             <Route path='/customer/cart' element={<Cart/>} />
             <Route path='/customer/purchase' element={<Purchase/>} />
             <Route path='/customer/shopinfo' element={<ShopInfo/>} />
+            <Route path='/customer/notice' element={<Notice/>} />
+            <Route path='/customer/event' element={<Event/>} />
+            <Route path='/customer/notice/view' element={<NoticeView/>} />
+            <Route path='/customer/chat' element={<Chat/>} />
+            <Route path='/customer/review' element={<ReviewList/>} />
+            <Route path='/customer/review/write' element={<ReviewWrite/>} />
           </Routes>
         </BrowserRouter>
         // </Container>
