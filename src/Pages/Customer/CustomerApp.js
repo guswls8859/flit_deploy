@@ -1,5 +1,4 @@
 import React from "react";
-import { Box, Container} from "@chakra-ui/react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Category from "./Category";
 import Home from "./Home";
@@ -17,6 +16,9 @@ import Chat from "./Chat";
 import ReviewList from './Review/List'
 import ReviewWrite from "./Review/Write";
 import PurchaseComplete from "./PurchaseComplete";
+import Info from "./Info";
+import PortfolioView from "./Portfolio/PortfolioView";
+import Order from "./Order";
 
 const CustomerApp = () => {
     return (
@@ -24,6 +26,7 @@ const CustomerApp = () => {
                 <BrowserRouter>
           <Routes>
             <Route path='/customer' element={<Home />} />
+            <Route path='/customer/info' element={<Info />} />
             <Route path='/customer/category' element={<Category />} />
             <Route path='/customer/product/*' element={<ProductList/>} />
             <Route path='/customer/product/view/*' element={<ProductView/>} />
@@ -39,6 +42,8 @@ const CustomerApp = () => {
             <Route path='/customer/review' element={<ReviewList/>} />
             <Route path='/customer/review/write' element={<ReviewWrite/>} />
             <Route path='/customer/purchase/complete' element={<PurchaseComplete/>} />
+            <Route path='/customer/portfolio/view' element={<PortfolioView/>} />
+            <Route path='/customer/order' element={<Order/>} />
           </Routes>
         </BrowserRouter>
         // </Container>

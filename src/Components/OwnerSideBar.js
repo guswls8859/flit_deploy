@@ -34,7 +34,7 @@ import PortfolioList from '../Pages/Owner/Portfolio/List'
 import PortfolioAdd from '../Pages/Owner/Portfolio/Add'
 import ProductView from '../Pages/Owner/Product/View'
 import PortfolioView from '../Pages/Owner/Portfolio/View'
-import SalesList from '../Pages/Owner/Sales/List'
+import SalesList from '../Pages/Owner/Sales/TotalList'
 import AdvertiseAdd from '../Pages/Owner/Advertise/Add'
 // import AdvertiseList from '../Pages/Owner/Advertise/List'
 // import AdvertiseBuy from '../Pages/Owner/Advertise/Buy'
@@ -48,6 +48,12 @@ import Footer from './Footer'
 import { useState } from 'react'
 import NoticeList from '../Pages/Owner/Community/Notice'
 import NoticeView from '../Pages/Owner/Community/NotiveView'
+import { MoonIcon, SunIcon } from '@chakra-ui/icons'
+import SalesTotal from '../Pages/Owner/Sales/TotalList'
+import SalesFlit from '../Pages/Owner/Sales/FlitList'
+import SalesAccount from '../Pages/Owner/Sales/AccountList'
+import AccountRegister from '../Pages/Owner/Sales/AccountRegister'
+import Calculate from '../Pages/Owner/Calculate.js/Calculate'
 
 const SidebarContent = ({ onClose, ...rest }) => {
   return (
@@ -76,7 +82,7 @@ const SidebarContent = ({ onClose, ...rest }) => {
       <Stack spacing={0}>
         <NavItem link={'/'}>HOME</NavItem>
 
-        <Accordion defaultIndex={[parseInt(localStorage.getItem('openIndex'))]} onChange={(e) => localStorage.setItem('openIndex', e)}>
+        <Accordion borderColor={'white'} defaultIndex={[parseInt(localStorage.getItem('openIndex'))]} onChange={(e) => localStorage.setItem('openIndex', e)}>
           <AccordionItem>
             <AccordionButton p={0} w={'100%'}>
               <NavTitle>주문 관리<AccordionIcon /></NavTitle>
@@ -127,6 +133,15 @@ const SidebarContent = ({ onClose, ...rest }) => {
               <NavItem link={'/sales/all'}>전체 매출</NavItem>
               <NavItem link={'/sales/flit'}>플릿 매출</NavItem>
               <NavItem link={'/sales/account'}>가계부</NavItem>
+            </AccordionPanel>
+          </AccordionItem>
+
+          <AccordionItem>
+            <AccordionButton p={0} w={'100%'}>
+              <NavTitle>정산관리<AccordionIcon /></NavTitle>
+            </AccordionButton>
+            <AccordionPanel p={0}>
+              <NavItem link={'/calculate'}>정산 관리</NavItem>
             </AccordionPanel>
           </AccordionItem>
 
@@ -270,6 +285,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
       <HStack spacing={{ base: '0', md: '6' }}>
         <Flex alignItems={'center'}>
           <HStack>
+            {/* <ColorModeButton/> */}
             <Login onLogin={() => window.location.reload()}/>
             {!localStorage.getItem('ownerToken') && <Submit />}
           </HStack>
@@ -310,7 +326,10 @@ const SidebarWithHeader = () => {
             <Route path='/portfolio/*' element={<PortfolioList />} />
             <Route path='/portfolio/add' element={<PortfolioAdd />} />
             <Route path='/portfolio/view/*' element={<PortfolioView />} />
-            <Route path='/sales/*' element={<SalesList />} />
+            <Route path='/sales/all' element={<SalesTotal />} />
+            <Route path='/sales/flit' element={<SalesFlit />} />
+            <Route path='/sales/account' element={<SalesAccount />} />
+            <Route path='/sales/register' element={<AccountRegister />} />
             <Route path='/advertise' element={<AdvertiseAdd />} />
             {/* <Route path='/advertise/1' element={<AdvertiseList />} />
             <Route path='/advertise/buy' element={<AdvertiseBuy />} /> */}
@@ -320,6 +339,7 @@ const SidebarWithHeader = () => {
             <Route path='/shop/chat' element={<ChatList />} />
             <Route path='/notice/*' element={<NoticeList />} />
             <Route path='/notice/view' element={<NoticeView />} />
+            <Route path='/calculate' element={<Calculate />} />
           </Routes>
         </BrowserRouter>
       </Box>

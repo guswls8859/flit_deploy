@@ -38,6 +38,12 @@ import AddNotice from '../Pages/Admin/Notice/Add'
 import NoticeList from '../Pages/Admin/Notice/List'
 import CouponList from '../Pages/Admin/Coupon/List'
 import CouponAdd from '../Pages/Admin/Coupon/Add'
+import SubmitDashboard from '../Pages/Admin/Shop/SubmitDashboard'
+import UserDashboard from '../Pages/Admin/User/UserDashboard'
+import Plan from '../Pages/Admin/Plan'
+import Order from '../Pages/Admin/Order/Order'
+import OrderView from '../Pages/Admin/Order/View'
+import Advertise from '../Pages/Admin/Notice/Advertise'
 
 const SidebarContent = ({ onClose, ...rest }) => {
   return (
@@ -66,17 +72,17 @@ const SidebarContent = ({ onClose, ...rest }) => {
       <Stack spacing={0}>
         <NavItem link={'/admin'}>HOME</NavItem>
 
-        <Accordion defaultIndex={parseInt(localStorage.getItem('openIndex'))} onChange={(e) => localStorage.setItem('openIndex', e)}>
+        <Accordion borderColor={'white'} defaultIndex={parseInt(localStorage.getItem('openIndex'))} onChange={(e) => localStorage.setItem('openIndex', e)}>
           <AccordionItem>
             <AccordionButton p={0} w={'100%'}>
               <NavTitle>유저 관리<AccordionIcon /></NavTitle>
             </AccordionButton>
             <AccordionPanel p={0}>
-              <NavItem >전체 유저 관리</NavItem>
-              <NavItem >Customer 관리</NavItem>
-              <NavItem >Shop 관리</NavItem>
-              <NavItem >Florist 관리</NavItem>
-              <NavItem >탈퇴 유저 관리</NavItem>
+              <NavItem link={'/admin/user/all'}>전체 유저 관리</NavItem>
+              <NavItem link={'/admin/user/user'}>Customer 관리</NavItem>
+              <NavItem link={'/admin/user/store'}>Shop 관리</NavItem>
+              <NavItem link={'/admin/user/florist'}>Florist 관리</NavItem>
+              <NavItem link={'/admin/user/seceder'}>탈퇴 유저 관리</NavItem>
             </AccordionPanel>
           </AccordionItem>
 
@@ -95,8 +101,8 @@ const SidebarContent = ({ onClose, ...rest }) => {
               <NavTitle>거래 관리<AccordionIcon /></NavTitle>
             </AccordionButton>
             <AccordionPanel p={0}>
-              <NavItem>주문 관리</NavItem>
-              <NavItem>수발주 관리</NavItem>
+              <NavItem link={'/admin/order'}>주문 관리</NavItem>
+              {/* <NavItem>수발주 관리</NavItem> */}
               <NavItem>취소건 관리</NavItem>
             </AccordionPanel>
           </AccordionItem>
@@ -128,9 +134,9 @@ const SidebarContent = ({ onClose, ...rest }) => {
             </AccordionButton>
             <AccordionPanel p={0}>
               <NavItem link={'/admin/coupon/1'}>쿠폰</NavItem>
-              <NavItem >광고</NavItem>
+              <NavItem link={'/admin/notice/advertise'} >광고</NavItem>
               <NavItem link={'/admin/notice/list/1'}>공지/이벤트</NavItem>
-              <NavItem >플릿일정</NavItem>
+              <NavItem link={'/admin/plan'}>플릿일정</NavItem>
             </AccordionPanel>
           </AccordionItem>
 
@@ -139,7 +145,7 @@ const SidebarContent = ({ onClose, ...rest }) => {
               <NavTitle>입점센터<AccordionIcon /></NavTitle>
             </AccordionButton>
             <AccordionPanel p={0}>
-              <NavItem>입점현황</NavItem>
+              <NavItem link={'/admin/submit/dashboard'}>입점현황</NavItem>
               <NavItem link={'/admin/submit/list/1'}>입점신청</NavItem>
             </AccordionPanel>
           </AccordionItem>
@@ -291,6 +297,8 @@ const SidebarWithHeader = () => {
         <BrowserRouter>
           <Routes>
             <Route path='/admin' element={<Home />} />
+            <Route path='/admin/user/*' element={<UserDashboard />} />
+            <Route path='/admin/submit/dashboard' element={<SubmitDashboard/>} />
             <Route path='/admin/submit/list/*' element={<SubmitList/>} />
             <Route path='/admin/submit/view/*' element={<SubmitView/>} />
             <Route path='/admin/product/*' element={<ProductList />} />
@@ -299,8 +307,12 @@ const SidebarWithHeader = () => {
             <Route path='/admin/portfolio/view/*' element={<PortfolioView />} />
             <Route path='/admin/notice/list/*' element={<NoticeList />} />
             <Route path='/admin/notice/add' element={<AddNotice />} />
+            <Route path='/admin/notice/advertise' element={<Advertise />} />
             <Route path='/admin/coupon/1' element={<CouponList/>} />
             <Route path='/admin/coupon/register' element={<CouponAdd/>} />
+            <Route path='/admin/plan' element={<Plan/>} />
+            <Route path='/admin/order' element={<Order/>} />
+            <Route path='/order/view/*' element={<OrderView/>} />
           </Routes>
         </BrowserRouter>
         </Box>

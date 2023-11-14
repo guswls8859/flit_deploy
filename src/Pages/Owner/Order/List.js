@@ -11,6 +11,7 @@ import ProductCard from "../../../Components/ProductCard";
 import { FilterSelect } from "../../../Components/FilterSelect";
 import { SearchInput } from "../../../Components/Form";
 import { isAdmin } from "../../../App";
+import {postOrder} from "../../Owner/Order/barogo"
 
 const OrderList = () => {
     const toast = useToast();
@@ -41,28 +42,37 @@ const OrderList = () => {
     }
 
     const search = async() => {
-        let result = await getOrderList(filter)
-        console.log(result)
-        setOrderList(result)
+        if(isAdmin) {
+            let result = await getAllList('Order')
+            console.log(result)
+            setOrderList(result)
+        }
+        else
+        {
+            let result = await getOrderList(filter)
+            console.log(result)
+            setOrderList(result)
+        }
     }
 
     return (
         <Box>
+            <button onClick={postOrder}>tesss</button>
             <Text {...Title_2xl}>주문 조회</Text>
 
             <FilterSelect onReset={() => reset()} onSearch={() => search()}>
 
-                <Stack direction={'column'} divider={<StackDivider />} spacing={3}>
+                <Stack direction={'column'}  divider={<StackDivider borderColor={"#d9d9d9"} />} spacing={3}>
 
                     <SearchInput option={['상품코드', '상품명']} defaultType={filter.type} defaultValue={filter.keyword} onSetField={(e) => setFilter({ ...filter, type: e.target.value })} onChange={(value) => setFilter({ ...filter, keyword: value })} />
 
                     <HStack >
-                        <Select defaultValue={filter.date} onChange={(e) => setFilter({ ...filter, date: e.target.value })}>
+                        <Select borderColor={"#d9d9d9"}defaultValue={filter.date} onChange={(e) => setFilter({ ...filter, date: e.target.value })}>
                             <option value={'등록일'}>{'등록일'}</option>
                         </Select>
-                        <Input type='date' defaultValue={filter.start} onChange={(e) => setFilter({ ...filter, start: e.target.value })}></Input>
+                        <Input borderColor={'#d9d9d9'}type='date' defaultValue={filter.start} onChange={(e) => setFilter({ ...filter, start: e.target.value })}></Input>
                         <Text>~</Text>
-                        <Input type='date' defaultValue={filter.end} onChange={(e) => setFilter({ ...filter, end: e.target.value })}></Input>
+                        <Input borderColor={'#d9d9d9'}type='date' defaultValue={filter.end} onChange={(e) => setFilter({ ...filter, end: e.target.value })}></Input>
 
                     </HStack>
                     <Box>
@@ -96,7 +106,7 @@ const OrderList = () => {
                     </Thead>
                     <Tbody>
                         {orderList.map((value, index) => (
-                            <Tr _hover={{ bgColor: 'gray.100' }} onClick={() => navigate('/')}>
+                            <Tr _hover={{ bgColor: 'gray.100' }} onClick={() => navigate(`/order/view/${value.id}`, { state: { order: value } })}>
                                 <Th w={'20px'}><Checkbox /></Th>
                                 <Td {...TBody}>{value.id.slice(0, 10)}</Td>
                                 <Td {...TBody}>{getDate(value.timestamp)}</Td>
