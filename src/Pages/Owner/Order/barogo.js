@@ -15,7 +15,7 @@ export async function ordersuc_post(orders){//주문조회
       "pickupWishAt": orders.pickup_time,//픽업희망일시(timestamp)
       "totalPayPrice": orders.totalpay,//총 결제 금액
       "actualPayPrice": orders.realpay,//실제 결제 금액
-      "prepaidPrice": 0,//선결제 금액
+      "prepaidPrice": 65000,//선결제 금액
       "paymentCashPrice": 0,//후불 현금 결제금액
       "paymentCardPrice": 0,//후불 카드 결제 금액
       "isUntact": true,//비대면 배달 여부
@@ -40,28 +40,27 @@ export async function postOrder(orderInfo){//주문 접수
 
     try{
         const response = await axios.post('https://staging-api-interlocker.gorelas.com/api/orders',{
-            "baseType": '인천시 부평구 영성동로 18번길 19',//주소(add to add)
             "orderType": "FOR_DELIVERY",//연동형태(FOR_DELIVERY)
-            "orderAgencyId": "illi_test",//주문 제휴사 아이디s
-            "orderAgencyOrderId": 'TEST_00000123',//주문 제휴사 주문 아이디
+            "orderAgencyId": "illi_test",//주문 제휴사 아이디
+            "orderAgencyOrderId": "TEST_00000123",//주문 제휴사 주문 아이디
             "orderAgencyDailyOrderId": "101",//주문 제휴사 당일 주문 아이디
+            "orderAgencyStoreId" :"OW00000000",
             "totalPayPrice": 67000, //총 결제 금액
             "actualPayPrice": 50000,//실제 결제 금액
-            "prepaidPrice": 0,//선결제 금액
+            "prepaidPrice": 67000,//선결제 금액
             "prepaidMethod": "CARD",//선결제 수단
             "paymentCashPrice": 0,//후불 현금 결제 금액
             "paymentCardPrice": 0,//후불 카드 결제 금액
             "taxFreePayPrice": 0,//일회용 컵 반환 보증금 후불 결제 금액 (default: 0)
             "orderProducts": [
               {
-                "type": 'flower',//상품 유형 (배달팁도 하나의 상품으로 취급 = DELIVERY_TIP)
+                "type": 'ETC',//상품 유형 (배달팁도 하나의 상품으로 취급 = DELIVERY_TIP)
                 "name": '장미10송이',//상품 이름
                 "totalPrice": 60000,//상품 총 금액 (상품 금액과 해당 상품에 포함된 옵션 금액의 합계 금액)
                 "unitPrice": 60000,//상품 단가
                 "quantity": 1,//상품 수량
                 "options": [//옵션 상품 목록
                   {
-                    "group": '포장',//옵션 종류
                     "name": '꽃 다발',//옵션 이름
                     "unitPrice": 5000,//옵션 단가
                     "quantity": 1//옵션 수량
@@ -80,26 +79,19 @@ export async function postOrder(orderInfo){//주문 접수
             "receiverPhone": '01041689819',//수령자(고객) 연락처
             "ordererName": '김현진',//주문자(고객) 이름
             "receiverName": '김현진',//수령자(고객) 이름
-            "ordererOrderMemo": '안전하게 와주세요',//상점의 요청 사항(배달대행사에게 전달)
+            "storeOrderMemo" : "안전배달해주세요",//상점의 요청 사항
+            "ordererOrderMemo": '안전하게 와주세요',//고객의 요청 사항(배달대행사에게 전달)
             "orderChannel": "ETC",//주문 유입 채널
-            "isReservation": false,//예약 주문 여부
+            "isReservation": true,//예약 주문 여부
             "dropWishAt": dropday,//드랍 희망 일시 (timestamp) [ 현재시간으로부터 90분 이후 .. 2개월 이내
-            "reservedOrderDisplayTime": null,//라이더앱 노출 시간 (분)* dropWishAt 기준으로 라이더에게 주문이 몇 분 전에 노출되어야 하는지 입력받는 시간(분)입니다.
+            "reservedOrderDisplayTime": 10,//라이더앱 노출 시간 (분)* dropWishAt 기준으로 라이더에게 주문이 몇 분 전에 노출되어야 하는지 입력받는 시간(분)입니다.
             "pickupWishAt": pickday,//픽업 희망 일시 (timestamp)
             //실시간 배달(isReservation false)인 경우 - 픽업희망일시(pickupWishAt)는 현재시간 + 90분 이내를 허용
             //예약 배달(isReservation true)인 경우 - dropWishAt - 라이더앱 노출시간 < pickupWishAt < dropWishAt – 20분
-            "hasAlcoholicBeverage": false,
             "isUntact": true,//비대면 배달 여부
-            "pickupId": 'test_001',//픽업지 식별 아이디
-            "pickupName": '일리',//픽업지 이름 (설명)
-            "pickupPhone": '01041689819',//픽업지 연락처
-            "pickupRoadAddress": '서울특별시 노원구 공릉동 동일로174길 27',//픽업 도로명 주소
-            "pickupJibunAddress": '',//픽업 지번 주소 (법정동)
-            "pickupAddressDetail": '2층 203호',//픽업 상세 주소
             "dropRoadAddress": '인천시 부평구 영성동로 18번길 19',//드랍 도로명 주소
-            "dropJibunAddress": '',//드랍 지번 주소 (법정동)
+            "dropJibunAddress": '인천시 부평구 512번지',//드랍 지번 주소 (법정동)
             "dropAddressDetail": '105동 301호',//드랍 상세 주소
-            "bundleDeliveryCount": 1,//묶음 배달 건수 (값이 없을 시 제한 없음)
             "orderAgencyOrderCreatedAt": today//주문 제휴사에서 관리하는 실제 주문자(고객)의 주문 접수 일시 (timestamp)
         },{
           headers:{

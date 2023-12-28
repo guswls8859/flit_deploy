@@ -7,6 +7,7 @@ const Home = () => {
         <Box>
             <Text>
                 {window.location.pathname}
+
             </Text>
         </Box>
     )

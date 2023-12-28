@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Legend, Tooltip, PieChart, Pie, Cell, BarChart, Bar, ResponsiveContainer } from "recharts"
 import axios from "axios";
 import { dayData } from "../Shop/SubmitDashboard";
-import { getDate, getList } from "../../../DB/function";
+import { getDate, getList, getUsercnt} from "../../../DB/function";
+
 
 export const allUsersData = [
   { title: 'Customer', subtitle: '전체 고객 수', number: '67,790', increase: '+145' },
@@ -53,7 +54,7 @@ export default function AdminUser() {
 		getOwnerList();
 
 		getUserData();
-
+		//getUsercntdata();
 	}, []);
 
 	const getUserData = async () => {
@@ -64,7 +65,10 @@ export default function AdminUser() {
         let list = await getList('Customer', 'all');
         setCustomer(list)
 	}
-
+	// const getUsercntdata = async() =>{
+	// 	let list = await getUsercnt();
+	// 	console.log(list)
+	// }
 	const getOwnerList = async () => {
         let list = await getList('Owner', 'all');
         console.log(list)
@@ -182,7 +186,7 @@ export default function AdminUser() {
       </Tr>
     </Thead>
     <Tbody>
-        {(menu ==='Customer') && customer.map((value, index) => (
+        {((menu ==='Customer') || (menu ==='Total User')) && customer.map((value, index) => (
             <Tr key={index}>
                 <Td>{value.grade}</Td>
                 <Td>{value.name}</Td>
@@ -194,7 +198,7 @@ export default function AdminUser() {
                 <Td>{getDate(value.date)}</Td>
             </Tr>
         ))}
-                {(menu ==='Store' || menu ==='Florist' ) && owner.map((value, index) => (
+                {(menu ==='Store' || menu ==='Florist' || (menu ==='Total User')) && owner.map((value, index) => (
             <Tr key={index}>
                 <Td>{value.grade}</Td>
                 <Td>{value.name}</Td>

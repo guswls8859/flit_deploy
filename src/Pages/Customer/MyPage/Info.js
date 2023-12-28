@@ -1,6 +1,6 @@
 import { Avatar, Badge, Box, Button, Center, Flex, FormControl, FormLabel, HStack, Input, Stack, StackDivider, Text, VStack, useBoolean } from '@chakra-ui/react'
 import React from 'react'
-import MobileStatus from '../../Components/MobileStatus'
+import MobileStatus from '../../../Components/MobileStatus'
 import { QuestionIcon } from '@chakra-ui/icons'
 import { FaToggleOff, FaToggleOn } from 'react-icons/fa'
 
@@ -9,10 +9,7 @@ function Info() {
     const [sms, setSms] = useBoolean(true);
     return (
         <Flex flexDirection={'column'} w="100%">
-            <Flex w='100%' left={0} position="fixed" zIndex={999} borderBottom={'1px solid #d9d9d9'}>
                 <MobileStatus title={"내 정보 수정"} />
-
-            </Flex>
 
             <Stack mt='70px' divider={<StackDivider />}>
                 <Center>
@@ -72,8 +69,8 @@ function Info() {
                 </Box>
 
 
-                <Button variant={'unstyled'}>로그아웃</Button>
-                <Button variant={'unstyled'}>회원탈퇴</Button>
+                {/* <Button variant={'unstyled'}>로그아웃</Button>
+                <Button variant={'unstyled'}>회원탈퇴</Button> */}
 
             </Stack>
         </Flex>

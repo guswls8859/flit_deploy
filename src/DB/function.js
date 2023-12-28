@@ -152,7 +152,14 @@ export const getProductList = async (filter) => {
   console.log(filter, result)
   return result;
 }
-
+export const getUsercnt = async() =>{
+  const q = query(collection(db, "Usercnt"),where("date", "==", "0000.00.00"))
+  const querySnapshot = await getDocs(q);
+  let result = []
+  console.log(querySnapshot)
+  
+  return result
+}
 export const getPortfolioList = async (filter, ownerId) => {
 
   let field = 'regist_date';
@@ -239,7 +246,8 @@ export const getPlan = async (ownerId, date) => {
 }
 
 export const getNotice = async (filter) => {
-  const q = query(collection(db, 'Notice'), where('user', 'array-contains-any', filter.user))
+  // user 타입에 따라 분리 필요
+  const q = query(collection(db, 'Notice'))
 
   const querySnapshot = await getDocs(q);
   let result = []

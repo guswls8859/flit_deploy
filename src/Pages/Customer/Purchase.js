@@ -66,7 +66,7 @@ const Purchase = () => {
             customerId: localStorage.getItem('customerToken'),
             ownerId: orderInfo.product[0].product.ownerId,
             order: {...orderInfo.order, 
-                state : '미점수',
+                state : '미접수',
                 orderName: `${orderInfo.product[0].product.product_name} ${orderInfo.product.length > 2 ? '외 ' + (orderInfo.product.length - 1) + '건' : ""}`
             }
         })
@@ -96,9 +96,7 @@ const Purchase = () => {
 
     return (
         <Flex bgColor={'white'} flexDirection={'column'} w="100%">
-            <Flex w='100%' left={0} position="fixed" zIndex={999} borderBottom={'1px solid #d9d9d9'}>
                 <MobileStatus title={`주문하기`} isHome={true} />
-            </Flex>
 
             <Stack mt={'50px'} mb={'80px'}>
                 {localStorage.getItem('Cart') === "픽업" &&
